@@ -8,9 +8,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BankException extends RuntimeException{
     Integer code;
-    public BankException(String message) {
-        super(message);
-    }
 
     public BankException(Integer code,String message) {
         super(message);

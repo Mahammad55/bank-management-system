@@ -27,4 +27,6 @@ public class ReqCustomer {
     String seria;
 
     String cif;
+
+    ReqToken reqToken;
 }

@@ -12,5 +12,6 @@ public interface AccountMapper {
     @Mapping(target = "respCustomer.customerId",source = "customer.id")
     RespAccount toResponse(Account account);
 
+    @Mapping(target = "customer.id",source = "customerId")
     Account toEntity(ReqAccount reqAccount);
 }

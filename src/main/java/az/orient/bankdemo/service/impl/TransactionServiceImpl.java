@@ -9,6 +9,7 @@ import az.orient.bankdemo.entity.Transaction;
 import az.orient.bankdemo.enums.EnumAvailableStatus;
 import az.orient.bankdemo.exception.BankException;
 import az.orient.bankdemo.exception.ExceptionConstant;
+import az.orient.bankdemo.exception.ExceptionMessage;
 import az.orient.bankdemo.mapper.TransactionMapper;
 import az.orient.bankdemo.repository.AccountRepository;
 import az.orient.bankdemo.repository.TransactionRepository;
@@ -19,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -31,25 +33,21 @@ public class TransactionServiceImpl implements TransactionService {
 
     TransactionMapper mapper;
 
-    private static final String ACCOUNT_NOT_FOUND_MESSAGE = "Account not found!";
-    private static final String TRANSACTION_NOT_FOUND_MESSAGE = "Transaction not found!";
-    private static final String INVALID_REQUEST_DATA_MESSAGE = "Invalid request data";
-
     @Override
     public Response<List<RespTransaction>> getTransactionList(Long accountId) {
         Response<List<RespTransaction>> response = new Response<>();
         if (accountId == null) {
-            throw new BankException(ExceptionConstant.INVALID_REQUEST_DATA, INVALID_REQUEST_DATA_MESSAGE);
+            throw new BankException(ExceptionConstant.INVALID_REQUEST_DATA,  ExceptionMessage.INVALID_REQUEST_DATA_MESSAGE);
         }
 
         Account account = accountRepository.findAccountByIdAndActive(accountId, EnumAvailableStatus.ACTIVE.value);
         if (account == null) {
-            throw new BankException(ExceptionConstant.ACCOUNT_NOT_FOUND, ACCOUNT_NOT_FOUND_MESSAGE);
+            throw new BankException(ExceptionConstant.ACCOUNT_NOT_FOUND,  ExceptionMessage.ACCOUNT_NOT_FOUND_MESSAGE);
         }
 
         List<Transaction> transactionList = transactionRepository.findAllByFromAccountAndActive(account, EnumAvailableStatus.ACTIVE.value);
         if (transactionList.isEmpty()) {
-            throw new BankException(ExceptionConstant.TRANSACTION_NOT_FOUND, TRANSACTION_NOT_FOUND_MESSAGE);
+            throw new BankException(ExceptionConstant.TRANSACTION_NOT_FOUND,  ExceptionMessage.TRANSACTION_NOT_FOUND_MESSAGE);
         }
 
         List<RespTransaction> respTransactionList = transactionList.stream().map(mapper::toResponse).toList();
@@ -60,27 +58,24 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Response saveTransaction(ReqTransaction reqTransaction) {
-        Response response=new Response();
+    public RespStatus saveTransaction(ReqTransaction reqTransaction) {
         Long fromAccountId= reqTransaction.getFromAccountId();
         String toAccount= reqTransaction.getToAccount();
-        Double amount= reqTransaction.getAmount();
+        BigDecimal amount= reqTransaction.getAmount();
         String iban= reqTransaction.getIban();
         if(fromAccountId==null ||toAccount==null|| amount==null || iban==null){
-            throw new BankException(ExceptionConstant.INVALID_REQUEST_DATA, INVALID_REQUEST_DATA_MESSAGE);
+            throw new BankException(ExceptionConstant.INVALID_REQUEST_DATA,  ExceptionMessage.INVALID_REQUEST_DATA_MESSAGE);
         }
 
         Account account = accountRepository.findAccountByIdAndActive(fromAccountId, EnumAvailableStatus.ACTIVE.value);
         if(account==null){
-            throw new BankException(ExceptionConstant.ACCOUNT_NOT_FOUND, ACCOUNT_NOT_FOUND_MESSAGE);
+            throw new BankException(ExceptionConstant.ACCOUNT_NOT_FOUND,  ExceptionMessage.ACCOUNT_NOT_FOUND_MESSAGE);
         }
 
         Transaction transaction=mapper.toEntity(reqTransaction);
-        transaction.setFromAccount(account);
-
         transactionRepository.save(transaction);
-        response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+
+        return RespStatus.getSuccessMessage();
     }
 }
 

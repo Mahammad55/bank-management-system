@@ -9,6 +9,7 @@ import az.orient.bankdemo.entity.Customer;
 import az.orient.bankdemo.enums.EnumAvailableStatus;
 import az.orient.bankdemo.exception.BankException;
 import az.orient.bankdemo.exception.ExceptionConstant;
+import az.orient.bankdemo.exception.ExceptionMessage;
 import az.orient.bankdemo.mapper.AccountMapper;
 import az.orient.bankdemo.repository.AccountRepository;
 import az.orient.bankdemo.repository.CustomerRepository;
@@ -29,25 +30,22 @@ public class AccountServiceImpl implements AccountService {
     CustomerRepository customerRepository;
 
     AccountMapper mapper;
-    private static final String CUSTOMER_NOT_FOUND_MESSAGE = "Customer not found!";
-    private static final String ACCOUNT_NOT_FOUND_MESSAGE = "Account not found!";
-    private static final String INVALID_REQUEST_DATA_MESSAGE = "Invalid request data";
 
     @Override
     public Response<List<RespAccount>> getAccountsListByCustomerId(Long customerId) {
         Response<List<RespAccount>> response = new Response<>();
         if (customerId == null) {
-            throw new BankException(ExceptionConstant.INVALID_REQUEST_DATA, INVALID_REQUEST_DATA_MESSAGE);
+            throw new BankException(ExceptionConstant.INVALID_REQUEST_DATA, ExceptionMessage.INVALID_REQUEST_DATA_MESSAGE);
         }
 
         Customer customer = customerRepository.findCustomerByIdAndActive(customerId, EnumAvailableStatus.ACTIVE.value);
         if (customer == null) {
-            throw new BankException(ExceptionConstant.CUSTOMER_NOT_FOUND, CUSTOMER_NOT_FOUND_MESSAGE);
+            throw new BankException(ExceptionConstant.CUSTOMER_NOT_FOUND, ExceptionMessage.CUSTOMER_NOT_FOUND_MESSAGE);
         }
 
         List<Account> accountList = accountRepository.findAllByCustomerAndActive(customer, EnumAvailableStatus.ACTIVE.value);
         if (accountList.isEmpty()) {
-            throw new BankException(ExceptionConstant.ACCOUNT_NOT_FOUND, ACCOUNT_NOT_FOUND_MESSAGE);
+            throw new BankException(ExceptionConstant.ACCOUNT_NOT_FOUND,  ExceptionMessage.ACCOUNT_NOT_FOUND_MESSAGE);
         }
 
         List<RespAccount> respAccountList = accountList.stream().map(mapper::toResponse).toList();
@@ -58,26 +56,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Response saveAccount(ReqAccount reqAccount) {
-        Response response = new Response();
-
+    public RespStatus saveAccount(ReqAccount reqAccount) {
         Long customerId = reqAccount.getCustomerId();
         String name = reqAccount.getName();
         String accountNo = reqAccount.getAccountNo();
         if (customerId == null || name == null || accountNo == null) {
-            throw new BankException(ExceptionConstant.INVALID_REQUEST_DATA, INVALID_REQUEST_DATA_MESSAGE);
+            throw new BankException(ExceptionConstant.INVALID_REQUEST_DATA,  ExceptionMessage.INVALID_REQUEST_DATA_MESSAGE);
         }
 
         Customer customer = customerRepository.findCustomerByIdAndActive(customerId, EnumAvailableStatus.ACTIVE.value);
         if (customer == null) {
-            throw new BankException(ExceptionConstant.CUSTOMER_NOT_FOUND, CUSTOMER_NOT_FOUND_MESSAGE);
+            throw new BankException(ExceptionConstant.CUSTOMER_NOT_FOUND,  ExceptionMessage.CUSTOMER_NOT_FOUND_MESSAGE);
         }
 
         Account account = mapper.toEntity(reqAccount);
-        account.setCustomer(customer);
         accountRepository.save(account);
 
-        response.setStatus(RespStatus.getSuccessMessage());
-        return response;
+        return RespStatus.getSuccessMessage();
     }
 }

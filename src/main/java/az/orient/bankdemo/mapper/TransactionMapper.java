@@ -13,5 +13,6 @@ public interface TransactionMapper {
     @Mapping(target = "respAccount.respCustomer.customerId",source = "fromAccount.customer.id")
     RespTransaction toResponse(Transaction transaction);
 
+    @Mapping(target = "fromAccount.id",source = "fromAccountId")
     Transaction toEntity(ReqTransaction  reqTransaction);
 }

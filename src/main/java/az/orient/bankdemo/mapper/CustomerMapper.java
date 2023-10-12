@@ -6,9 +6,11 @@ import az.orient.bankdemo.entity.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
-    @Mapping(target = "customerId",source = "id")
+    @Mapping(target = "customerId", source = "id")
     RespCustomer toResponse(Customer customer);
 
     Customer toEntity(ReqCustomer reqCustomer);

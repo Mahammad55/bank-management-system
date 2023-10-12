@@ -6,4 +6,6 @@ public final class ExceptionConstant {
     public final static Integer CUSTOMER_NOT_FOUND = 102;
     public final static Integer ACCOUNT_NOT_FOUND = 103;
     public final static Integer TRANSACTION_NOT_FOUND = 104;
+    public final static Integer USER_NOT_FOUND = 105;
+    public final static Integer INVALID_TOKEN = 106;
 }

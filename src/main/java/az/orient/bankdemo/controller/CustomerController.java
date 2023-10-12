@@ -1,7 +1,9 @@
 package az.orient.bankdemo.controller;
 
 import az.orient.bankdemo.dto.request.ReqCustomer;
+import az.orient.bankdemo.dto.request.ReqToken;
 import az.orient.bankdemo.dto.response.RespCustomer;
+import az.orient.bankdemo.dto.response.RespStatus;
 import az.orient.bankdemo.dto.response.Response;
 import az.orient.bankdemo.service.CustomerService;
 import lombok.AccessLevel;
@@ -25,28 +27,28 @@ import java.util.List;
 public class CustomerController {
     CustomerService customerService;
 
-    @GetMapping
-    public Response<List<RespCustomer>> getCustomerList() {
-        return customerService.getCustomerList();
+    @PostMapping("/list")
+    public Response<List<RespCustomer>> getCustomerList(@RequestBody ReqToken reqToken) {
+        return customerService.getCustomerList(reqToken);
     }
 
-    @GetMapping("/{id}")
-    public Response<RespCustomer> getCustomerById(@PathVariable(value = "id",required = false   ) Long customerId){
-        return customerService.getCustomerById(customerId);
+    @PostMapping("/id")
+    public Response<RespCustomer> getCustomerById(@RequestBody ReqCustomer reqCustomer){
+        return customerService.getCustomerById(reqCustomer);
     }
 
-    @PostMapping
-    public Response saveCustomer(@RequestBody ReqCustomer reqCustomer){
+    @PostMapping("/save")
+    public RespStatus saveCustomer(@RequestBody ReqCustomer reqCustomer){
         return customerService.saveCustomer(reqCustomer);
     }
 
     @PutMapping
-    public Response updateCustomer(@RequestBody ReqCustomer reqCustomer){
+    public RespStatus updateCustomer(@RequestBody ReqCustomer reqCustomer){
         return customerService.updateCustomer(reqCustomer);
     }
 
     @DeleteMapping("/{id}")
-    public Response deleteCustomer(@PathVariable(value = "id",required = false) Long customerId){
+    public RespStatus deleteCustomer(@PathVariable(value = "id",required = false) Long customerId){
         return customerService.deleteCustomer(customerId);
     }
 }

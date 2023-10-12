@@ -10,16 +10,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionHandlerClass {
 
     @ExceptionHandler(BankException.class)
-    public Response bankExceptionHandler(BankException ex) {
-        Response response = new Response<>();
-        response.setStatus(new RespStatus(ex.getCode(), ex.getMessage()));
-        return response;
+    public RespStatus bankExceptionHandler(BankException ex) {
+        return new RespStatus(ex.getCode(), ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    public Response exceptionHandler() {
-        Response response = new Response<>();
-        response.setStatus(new RespStatus(ExceptionConstant.INTERNAL_EXCEPTION, "Internal server exception"));
-        return response;
+    public RespStatus exceptionHandler() {
+        return new RespStatus(ExceptionConstant.INTERNAL_EXCEPTION, ExceptionMessage.INTERNAL_EXCEPTION_MESSAGE);
     }
 }

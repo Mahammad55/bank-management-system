@@ -1,4 +1,4 @@
-package az.orient.bankdemo.dto.response;
+package az.orient.bankdemo.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,13 +8,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RespTransaction {
-    RespAccount respAccount;
+public class ReqUser {
+    String username;
 
-    String toAccount;
-
-    Double amount;
-
-    String iban;
-
+    String password;
 }

@@ -1,6 +1,7 @@
 package az.orient.bankdemo.controller;
 
 import az.orient.bankdemo.dto.request.ReqTransaction;
+import az.orient.bankdemo.dto.response.RespStatus;
 import az.orient.bankdemo.dto.response.RespTransaction;
 import az.orient.bankdemo.dto.response.Response;
 import az.orient.bankdemo.service.TransactionService;
@@ -29,7 +30,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public Response saveTransaction(@RequestBody ReqTransaction reqTransaction) {
+    public RespStatus saveTransaction(@RequestBody ReqTransaction reqTransaction) {
         return transactionService.saveTransaction(reqTransaction);
     }
 }
